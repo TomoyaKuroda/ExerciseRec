@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/firebase-firestore";
 const uuidv1 = require("uuid/v1");
 const config = {
-  apiKey: process.env.REACT_APP_MY_VARIABLE,
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "exerciserec.firebaseapp.com",
   databaseURL: "https://exerciserec.firebaseio.com",
   projectId: "exerciserec",
