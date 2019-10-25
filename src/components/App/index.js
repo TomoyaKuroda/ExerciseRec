@@ -1,38 +1,40 @@
-import React, { useState, useEffect } from 'react'
-import './styles.css'
-import HomePage from '../HomePage'
-import Login from '../Login'
-import Register from '../Register'
-import Dashboard from '../Dashboard'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { CssBaseline, CircularProgress } from '@material-ui/core'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import firebase from '../firebase'
+import React, { useState, useEffect } from "react";
+import "./styles.css";
+import HomePage from "../../pages/home";
+import Login from "../../pages/login";
+import Register from "../../pages/register";
+import Dashboard from "../../pages/dashboard";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { CssBaseline, CircularProgress } from "@material-ui/core";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import firebase from "../firebase";
 
-const theme = createMuiTheme()
+const theme = createMuiTheme();
 
 export default function App() {
+  const [firebaseInitialized, setFirebaseInitialized] = useState(false);
 
-	const [firebaseInitialized, setFirebaseInitialized] = useState(false)
+  useEffect(() => {
+    firebase.isInitialized().then(val => {
+      setFirebaseInitialized(val);
+    });
+  });
 
-	useEffect(() => {
-		firebase.isInitialized().then(val => {
-			setFirebaseInitialized(val)
-		})
-	})
-
-
-	return firebaseInitialized !== false ? (
-		<MuiThemeProvider theme={theme}>
-			<CssBaseline />
-			<Router>
-				<Switch>
-					<Route exact path="/" component={HomePage} />
-					<Route exact path="/login" component={Login} />
-					<Route exact path="/register" component={Register} />
-					<Route exact path="/dashboard" component={Dashboard} />
-				</Switch>
-			</Router>
-		</MuiThemeProvider>
-	) : <div id="loader"><CircularProgress /></div>
+  return firebaseInitialized !== false ? (
+    <>
+      <CssBaseline />
+      <Router>
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/dashboard" component={Dashboard} />
+        </Switch>
+      </Router>
+    </>
+  ) : (
+    <div id="loader">
+      <CircularProgress />
+    </div>
+  );
 }
