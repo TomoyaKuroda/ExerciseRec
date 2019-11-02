@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 import firebase from "../components/firebase";
 import { Typography, Button, Avatar, Grid } from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
-import VerifiedUserOutlined from "@material-ui/icons/VerifiedUserOutlined";
 import Header from "../components/Layout/header";
 import Chart from "react-apexcharts";
 
@@ -76,17 +75,28 @@ function Dashboard(props) {
     var series = [];
     while (i < count) {
       var x = baseval;
-      var y = Math.floor(Math.random() * (100 - 30 + 1)) + 30;
-
-      series.push([x, y]);
+      let day = getFormattedDay(baseval);
+            console.log("getFormattedDay");
+      console.log(day);
+      let currentExercise = state.data.filter(x => x.date === day);
+            console.log("currentExercise");
+      console.log(currentExercise);
+      let totalTimes =0;
+      currentExercise.map(value=>totalTimes+=value.times)
+      series.push([x, totalTimes]);
       baseval += 86400000;
       i++;
     }
     return series;
   }
 
-  let oneMonth=new Date()
-  oneMonth.setMonth(oneMonth.getMonth()-1)
+  const getFormattedDay = (baseval) => {
+    var day = new Date(baseval);
+    return `${day.getFullYear()}/${day.getMonth() + 1}/${day.getDate()}`;
+  };
+
+  let oneMonth = new Date();
+  oneMonth.setMonth(oneMonth.getMonth() - 1);
 
   const data = {
     options: {
@@ -102,7 +112,7 @@ function Dashboard(props) {
         curve: "straight"
       },
       title: {
-        text: "Bicycle Crunch by Month",
+        text: "Daily exercise times by Month",
         align: "left"
       },
       grid: {
