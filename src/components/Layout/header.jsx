@@ -46,7 +46,16 @@ function Header(props) {
           <Typography variant="h6" className={classes.title}>
             Exercise Rec
           </Typography>
-          {firebase.getCurrentUsername() ? <nav className={classes.nav}>Hi {firebase.getCurrentUsername()}</nav> : null}
+          {firebase.getCurrentUsername() ? (
+            <Button
+              color="inherit"
+              component={Link}
+              to="/dashboard"
+              className={classes.nav}
+            >
+              {firebase.getCurrentUsername()}
+            </Button>
+          ) : null}
           {!auth ? (
             <Button color="inherit" component={Link} to="/login">
               Login

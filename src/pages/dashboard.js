@@ -76,13 +76,13 @@ function Dashboard(props) {
     while (i < count) {
       var x = baseval;
       let day = getFormattedDay(baseval);
-            console.log("getFormattedDay");
+      console.log("getFormattedDay");
       console.log(day);
       let currentExercise = state.data.filter(x => x.date === day);
-            console.log("currentExercise");
+      console.log("currentExercise");
       console.log(currentExercise);
-      let totalTimes =0;
-      currentExercise.map(value=>totalTimes+=value.times)
+      let totalTimes = 0;
+      currentExercise.map(value => (totalTimes += value.times));
       series.push([x, totalTimes]);
       baseval += 86400000;
       i++;
@@ -90,7 +90,7 @@ function Dashboard(props) {
     return series;
   }
 
-  const getFormattedDay = (baseval) => {
+  const getFormattedDay = baseval => {
     var day = new Date(baseval);
     return `${day.getFullYear()}/${day.getMonth() + 1}/${day.getDate()}`;
   };
@@ -128,7 +128,7 @@ function Dashboard(props) {
     series: [
       {
         name: "Desktops",
-        data: generateDayWiseTimeSeries(oneMonth.getTime(), 30)
+        data: generateDayWiseTimeSeries(oneMonth.getTime(), 31)
       }
     ]
   };
