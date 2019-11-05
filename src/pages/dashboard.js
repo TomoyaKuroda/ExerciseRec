@@ -60,6 +60,7 @@ function Dashboard(props) {
   });
 
   useEffect(() => {
+    document.title = "Dashboard"
     const fetchData = async () => {
       const result = await firebase.getCurrentUserExercises();
       console.log(result);

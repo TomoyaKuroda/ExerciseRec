@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Paper,
@@ -32,7 +32,9 @@ const useStyles = makeStyles(theme => ({
 
 function HomePage(props) {
   const classes = useStyles();
-
+  useEffect(() => {
+    document.title = "Exercise Rec";
+  }, []);
   return (
     <>
       <Header />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import firebase from "../components/firebase";
 import {
@@ -51,7 +51,9 @@ function Register(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  useEffect(() => {
+    document.title = "Sign up";
+  }, []);
   return (
     <main className={classes.main}>
       <Paper className={classes.paper}>

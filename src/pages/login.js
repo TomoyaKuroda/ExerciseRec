@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Typography, Paper, Avatar, Button, FormControl, Input, InputLabel } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import withStyles from '@material-ui/core/styles/withStyles'
@@ -42,7 +42,9 @@ function SignIn(props) {
 
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
-
+	useEffect(() => {
+		document.title = "Login"
+	}, []);
 	return (
 		<main className={classes.main}>
 			<Paper className={classes.paper}>
