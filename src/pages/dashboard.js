@@ -127,8 +127,11 @@ function Dashboard(props) {
     },
     series: [
       {
-        name: "Desktops",
-        data: generateDayWiseTimeSeries(oneMonth.getTime(), 31)
+        name: "Exercises",
+        data: generateDayWiseTimeSeries(
+          oneMonth.getTime(),
+          new Date(oneMonth.getFullYear(), oneMonth.getMonth(), 0).getDate() + 2
+        )
       }
     ]
   };
