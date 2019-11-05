@@ -13,7 +13,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Link } from "react-router-dom";
 import Header from "../components/Layout/header";
 import { makeStyles } from "@material-ui/core/styles";
-import image from "../images/jenny-hill-aJWwvXbMM8E-unsplash.jpg";
 import { withRouter } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
