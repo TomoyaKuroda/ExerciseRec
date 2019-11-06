@@ -48,9 +48,7 @@ function Dashboard(props) {
     return null;
   }
 
-  const [exercises, setExercises] = useState([]);
-
-  const [tableData, setTableData] = React.useState([{menu:'',times:0, date:''}]);
+  const [tableData, setTableData] = React.useState([{ menu: '', times: 0, date: '' }]);
 
   let columns = [
     { title: "Menu", field: "menu" },
@@ -74,13 +72,7 @@ function Dashboard(props) {
     while (i < count) {
       var x = baseval;
       let day = getFormattedDay(baseval);
-      // console.log("getFormattedDay");
-      // console.log(day);
-      // console.log('tableData')
-      // console.log(tableData)
       let currentExercise = tableData.filter(x => x.date === day);
-      // console.log("currentExercise");
-      // console.log(currentExercise);
       let totalTimes = 0;
       currentExercise.map(value => (totalTimes += Number(value.times)));
       series.push([x, totalTimes]);
@@ -153,36 +145,35 @@ function Dashboard(props) {
           title="Exercise Record"
           columns={columns}
           data={tableData}
-          // style={{ boxShadow: "initial" }} //added
           editable={{
             onRowAdd: newData =>
-              new Promise(resolve => {
+              new Promise((resolve, reject) => {
                 setTimeout(() => {
                   resolve()
-                  let items = [...tableData]
-                  items.push(newData)
-                  console.log('newData')
-                  console.log(newData)
-
-                  let day = new Date(newData.date);
-
-
-                  setTableData([...tableData, {menu: newData.menu , times:newData.times, date: `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}`}])
-                  console.log('tableData')
-                  console.log(tableData)
-                  firebase.addExercise(newData)
-
+                  if (newData.menu && Number.isInteger(newData.times) && newData.date) {
+                    let items = [...tableData]
+                    items.push(newData)
+                    console.log('newData')
+                    console.log(newData)
+                    let day = new Date(newData.date);
+                    setTableData([...tableData, { menu: newData.menu, times: newData.times, date: `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}` }])
+                    console.log('tableData')
+                    console.log(tableData)
+                    firebase.addExercise(newData)
+                  } else alert('There is something wrong with input')
                 }, 600);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve();
+                  if (newData.menu && Number.isInteger(newData.times) && newData.date) {
                   let items = [...tableData]
                   let foundIndex = items.findIndex(x => x.id == oldData.id);
                   items[foundIndex] = newData;
                   setTableData(items)
                   firebase.updateExercise(newData);
+                  }else alert('There is something wrong with input')
                 }, 600);
               }),
             onRowDelete: oldData =>
