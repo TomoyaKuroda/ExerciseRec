@@ -50,22 +50,19 @@ function Dashboard(props) {
 
   const [exercises, setExercises] = useState([]);
 
-  const [state, setState] = React.useState({
-    columns: [
-      { title: "Menu", field: "menu" },
-      { title: "Times", field: "times", type: "numeric" },
-      { title: "Date", field: "date", type: "date" }
-    ],
-    data: []
-  });
+  const [tableData, setTableData] = React.useState([{menu:'',times:0, date:''}]);
+
+  let columns = [
+    { title: "Menu", field: "menu" },
+    { title: "Times", field: "times", type: "numeric" },
+    { title: "Date", field: "date", type: "date" }
+  ]
 
   useEffect(() => {
     document.title = "Dashboard"
     const fetchData = async () => {
       const result = await firebase.getCurrentUserExercises();
-      console.log(result);
-      setState({ ...state, data: result });
-      console.log(state.data);
+      setTableData(result);
     };
     fetchData();
   }, []);
@@ -77,13 +74,15 @@ function Dashboard(props) {
     while (i < count) {
       var x = baseval;
       let day = getFormattedDay(baseval);
-      console.log("getFormattedDay");
-      console.log(day);
-      let currentExercise = state.data.filter(x => x.date === day);
-      console.log("currentExercise");
-      console.log(currentExercise);
+      // console.log("getFormattedDay");
+      // console.log(day);
+      // console.log('tableData')
+      // console.log(tableData)
+      let currentExercise = tableData.filter(x => x.date === day);
+      // console.log("currentExercise");
+      // console.log(currentExercise);
       let totalTimes = 0;
-      currentExercise.map(value => (totalTimes += value.times));
+      currentExercise.map(value => (totalTimes += Number(value.times)));
       series.push([x, totalTimes]);
       baseval += 86400000;
       i++;
@@ -93,13 +92,13 @@ function Dashboard(props) {
 
   const getFormattedDay = baseval => {
     var day = new Date(baseval);
-    return `${day.getFullYear()}/${day.getMonth() + 1}/${day.getDate()}`;
+    return `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}`;
   };
 
   let oneMonth = new Date();
   oneMonth.setMonth(oneMonth.getMonth() - 1);
 
-  const data = {
+  let data = {
     options: {
       chart: {
         zoom: {
@@ -137,6 +136,7 @@ function Dashboard(props) {
     ]
   };
 
+
   return (
     <>
       <Header />
@@ -151,28 +151,26 @@ function Dashboard(props) {
         </div>
         <MaterialTable
           title="Exercise Record"
-          columns={state.columns}
-          data={state.data}
+          columns={columns}
+          data={tableData}
           // style={{ boxShadow: "initial" }} //added
           editable={{
             onRowAdd: newData =>
               new Promise(resolve => {
                 setTimeout(() => {
-                  resolve();
-                  addExercise(newData.menu, newData.times, newData.date);
-                  console.log(newData);
-                  const data = [...state.data];
-                  data.push(newData);
-                  setState({ ...state, data });
+                  resolve()
+                  setTableData([...tableData, newData])
+                  firebase.addExercise(newData)
                 }, 600);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve();
-                  const data = [...state.data];
-                  data[data.indexOf(oldData)] = newData;
-                  setState({ ...state, data });
+                  let items = [...tableData]
+                  let foundIndex = items.findIndex(x => x.id == oldData.id);
+                  items[foundIndex] = newData;
+                  setTableData(items)
                   firebase.updateExercise(newData);
                 }, 600);
               }),
@@ -180,9 +178,8 @@ function Dashboard(props) {
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve();
-                  const data = [...state.data];
-                  data.splice(data.indexOf(oldData), 1);
-                  setState({ ...state, data });
+                  tableData.splice(tableData.indexOf(oldData), 1);
+                  setTableData([ ...tableData]);
                   firebase.deleteExercise(oldData);
                 }, 600);
               })
@@ -192,19 +189,7 @@ function Dashboard(props) {
     </>
   );
 
-  async function addExercise(menu, times, date) {
-    let day = new Date(date);
-    try {
-      await firebase.addExercise({
-        menu: menu,
-        times: times,
-        date: `${day.getFullYear()}/${day.getMonth() + 1}/${day.getDate()}`
-      });
-      await firebase.getCurrentUserExercises().then(setExercises);
-    } catch (error) {
-      alert(error.message);
-    }
-  }
+
 }
 
 export default withRouter(withStyles(styles)(Dashboard));

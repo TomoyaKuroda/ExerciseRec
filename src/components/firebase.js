@@ -33,62 +33,64 @@ class Firebase {
     });
   }
 
-  addExercise(exercise) {
+  
+
+   deleteExercise(exercise) {
     if (!this.auth.currentUser) {
       return alert("Not authorized");
     }
-
-    return this.db.collection(`${this.auth.currentUser.uid}`).add({
-      menu: exercise.menu,
-      times: exercise.times,
-      date: exercise.date,
-      id: uuidv1(),
-    });
-  }
-
-  async deleteExercise(exercise) {
-    if (!this.auth.currentUser) {
-      return alert("Not authorized");
-    }
-    let documentID;
-    await this.db
-      .collection(`${this.auth.currentUser.uid}`)
-      .where("id", "==", exercise.id)
-      .get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-          documentID = doc.id;
-        });
-      });
-
+   
     return this.db
-      .collection(`${this.auth.currentUser.uid}`)
-      .doc(documentID)
+    .collection('users')
+      .doc(`${this.auth.currentUser.uid}`)
+      .collection('exercises')
+      .doc(exercise.id)
       .delete();
   }
 
-  async updateExercise(exercise) {
+    addExercise(exercise) {
+      if (!this.auth.currentUser) {
+        return alert("Not authorized");
+      }
+
+      let day = new Date(exercise.date);
+
+      return this.db.collection('users').doc(`${this.auth.currentUser.uid}`)
+      .collection('exercises')
+      .add({
+        menu: exercise.menu,
+        times: exercise.times,
+        date: `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}`,
+      });
+
+
+    // try {
+    //   await firebase.addExercise({
+    //     menu: menu,
+    //     times: times,
+    //     date: `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}`
+    //   });
+    //   await firebase.getCurrentUserExercises().then(setExercises);
+    // } catch (error) {
+    //   alert(error.message);
+    // }
+  }
+
+   updateExercise(exercise) {
     if (!this.auth.currentUser) {
       return alert("Not authorized");
     }
-    let documentID;
-    await this.db
-      .collection(`${this.auth.currentUser.uid}`)
-      .where("id", "==", exercise.id)
-      .get()
-      .then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-          documentID = doc.id;
-        });
-      });
+    let day = new Date(exercise.date);
 
     return this.db
-      .collection(`${this.auth.currentUser.uid}`)
-      .doc(documentID)
+    .collection('users')
+      .doc(`${this.auth.currentUser.uid}`)
+      .collection('exercises')
+      .doc(exercise.id)
       .update({
         menu: exercise.menu,
         times: exercise.times,
-        date: exercise.date,
+        date: `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}`,
       });
   }
 
@@ -105,11 +107,15 @@ class Firebase {
   async getCurrentUserExercises() {
     const exercises = [];
     await this.db
-      .collection(`${this.auth.currentUser.uid}`)
+    .collection('users')
+      .doc(`${this.auth.currentUser.uid}`)
+      .collection('exercises')
       .get()
       .then(querySnapshot => {
         querySnapshot.docs.forEach(doc => {
-          exercises.push(doc.data());
+          let exercise = doc.data()
+          exercise.id = doc.id
+          exercises.push(exercise);
         });
       });
     return exercises;
