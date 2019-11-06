@@ -159,8 +159,19 @@ function Dashboard(props) {
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve()
-                  setTableData([...tableData, newData])
+                  let items = [...tableData]
+                  items.push(newData)
+                  console.log('newData')
+                  console.log(newData)
+
+                  let day = new Date(newData.date);
+
+
+                  setTableData([...tableData, {menu: newData.menu , times:newData.times, date: `${day.getMonth() + 1}/${day.getDate()}/${day.getFullYear()}`}])
+                  console.log('tableData')
+                  console.log(tableData)
                   firebase.addExercise(newData)
+
                 }, 600);
               }),
             onRowUpdate: (newData, oldData) =>
@@ -178,8 +189,9 @@ function Dashboard(props) {
               new Promise(resolve => {
                 setTimeout(() => {
                   resolve();
-                  tableData.splice(tableData.indexOf(oldData), 1);
-                  setTableData([ ...tableData]);
+                  let items = [...tableData]
+                  const filteredItems = items.filter(item => item.id !== oldData.id)
+                  setTableData(filteredItems);
                   firebase.deleteExercise(oldData);
                 }, 600);
               })
