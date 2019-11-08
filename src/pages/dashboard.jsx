@@ -1,8 +1,7 @@
 import MaterialTable from "material-table";
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import firebase from "../components/firebase";
-import { Typography, Button, Avatar, Grid } from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Header from "../components/Layout/header";
 import Chart from "react-apexcharts";
@@ -150,7 +149,8 @@ function Dashboard(props) {
               new Promise((resolve, reject) => {
                 setTimeout(() => {
                   resolve()
-                  if (newData.menu && Number.isInteger(newData.times) && newData.date) {
+                  console.log(newData.times)
+                  if (newData.menu && !isNaN(newData.times) && newData.date ) {
                     let items = [...tableData]
                     items.push(newData)
                     console.log('newData')
@@ -169,7 +169,7 @@ function Dashboard(props) {
                   resolve();
                   if (newData.menu && Number.isInteger(newData.times) && newData.date) {
                   let items = [...tableData]
-                  let foundIndex = items.findIndex(x => x.id == oldData.id);
+                  let foundIndex = items.findIndex(x => x.id === oldData.id);
                   items[foundIndex] = newData;
                   setTableData(items)
                   firebase.updateExercise(newData);
