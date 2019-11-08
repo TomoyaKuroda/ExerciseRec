@@ -103,7 +103,7 @@ function Dashboard(props) {
         curve: "straight"
       },
       title: {
-        text: "Daily exercise times by Month",
+        text: "Daily exercise times",
         align: "left"
       },
       grid: {
